@@ -54,7 +54,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
 
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-50 bg-espresso/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 z-50 bg-espresso/70 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={() => setOpen(false)}
@@ -63,14 +63,14 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
 
       {/* Panel */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 flex w-[84%] max-w-sm flex-col bg-cream shadow-2xl transition-transform duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 flex h-[100dvh] w-[86%] max-w-sm flex-col overflow-y-auto overscroll-contain bg-cream shadow-2xl transition-transform duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] lg:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
         role="dialog"
         aria-modal="true"
         aria-label={t.common.menu}
       >
-        <div className="flex items-center justify-between border-b border-sand-line px-5 py-4">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-sand-line bg-cream px-5 py-4">
           <Logo wordClass="text-lg" withTagline={false} href="/" />
           <button
             type="button"
@@ -82,11 +82,12 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-5 py-4" aria-label="Мобильді мәзір">
+        <nav className="px-5 py-4" aria-label="Мобильді мәзір">
           <ul className="flex flex-col">
             <li>
               <Link
                 href="/"
+                onClick={() => setOpen(false)}
                 className="flex items-center justify-between border-b border-sand-line/60 py-4 heading-serif text-2xl text-cocoa"
               >
                 {t.nav.home}
@@ -97,6 +98,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
               <li key={l.href}>
                 <Link
                   href={l.href}
+                  onClick={() => setOpen(false)}
                   className="flex items-center justify-between border-b border-sand-line/60 py-4 heading-serif text-2xl text-cocoa"
                 >
                   {l.label}
@@ -112,7 +114,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
           </div>
         </nav>
 
-        <div className="border-t border-sand-line p-5">
+        <div className="mt-auto border-t border-sand-line p-5">
           <a
             href={`https://wa.me/${SITE.primaryWhatsapp}`}
             target="_blank"
