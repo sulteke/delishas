@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DELISHAS — интернет-магазин / online store
 
-## Getting Started
+Премиальная клубника в шоколаде · **Астана** и **Караганда** · Instagram [@delish.as](https://instagram.com/delish.as)
 
-First, run the development server:
+Современный, полностью адаптивный магазин на **Next.js 16 (App Router) + TypeScript + Tailwind CSS v4**. Оформление заказа — через WhatsApp, с готовой архитектурой под онлайн-оплату (Kaspi и др.).
+
+---
+
+## 🚀 Запуск
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # продакшн-сборка
+npm run start    # запуск собранного приложения
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Node.js 18+.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Возможности
 
-## Learn More
+- **Каталог** из 8 товаров с фильтром по категориям, карточками, вариантами (размерами) и живой ценой.
+- **Праздничные наборы** (7 коллекций): Туған күн, Үйлену тойы, Қыз ұзату, 8 Наурыз, 14 Ақпан, Жаңа жыл, корпоративные подарки.
+- **Корзина** с сохранением в `localStorage`, drawer + отдельная страница оформления.
+- **Выбор города** (Астана / Караганда) — заказ уходит менеджеру нужного города.
+- **Оформление заказа через WhatsApp**: город, товары, количество, сумма, дата, время, адрес, имя, телефон и комментарий формируются в готовое сообщение и открывают `wa.me`.
+- **Два языка**: 🇰🇿 казахский (по умолчанию) и 🇷🇺 русский, переключение и сохранение выбора.
+- **SEO**: метаданные, Open Graph, `sitemap.xml`, `robots.txt`, favicon/иконки, JSON-LD (Store + Product), семантический HTML.
+- **Премиум-UX**: анимации при скролле, hover-эффекты, плавные переходы, липкий заголовок, плавающая кнопка WhatsApp.
+- Полностью адаптивно: Desktop, Laptop, Tablet/iPad, Android, iPhone.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠 Настройка бизнес-данных
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Почти всё правится в одном файле — [`lib/config.ts`](lib/config.ts):
 
-## Deploy on Vercel
+| Что | Где |
+| --- | --- |
+| Города, адреса, часы работы, координаты карт | `CITIES` |
+| **Номера WhatsApp по городам** | `CITIES[].whatsapp` |
+| Instagram, телефон, e-mail, домен | `SITE` |
+| Включение онлайн-оплаты | `PAYMENTS_ENABLED` |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> ⚠️ **Важно про города и номера.** Бренд работает в **Астане и Караганде** (по официальному Instagram). В ТЗ «Алматы/Талдыкорган» были указаны как пример (`Мысалы`). На сайте использованы реальные города.
+>
+> На Instagram опубликован один номер — **+7 777 301 33 00** (Астана). Для Караганды сейчас стоит **тот же номер как заглушка** — замените `whatsapp`/`phone` у города `karaganda` в `lib/config.ts`, когда будет второй номер.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Товары и цены: [`lib/products.ts`](lib/products.ts) · Коллекции: [`lib/collections.ts`](lib/collections.ts) · Переводы: [`lib/i18n/dictionaries.ts`](lib/i18n/dictionaries.ts).
+
+Цены на **букеты** ориентировочные (помечены `priceNote`) — уточните перед запуском.
+
+---
+
+## 💳 Онлайн-оплата (готово к подключению)
+
+Оплата сейчас **выключена** (`PAYMENTS_ENABLED = false`) — заказ завершается в WhatsApp. Архитектура готова: см. [`lib/payment.ts`](lib/payment.ts) — интерфейс `PaymentProvider` и заглушка `kaspiProvider`.
+
+Чтобы включить: реализуйте `createCheckout` для провайдера (Kaspi/карты), зарегистрируйте в `PROVIDERS` и поставьте `PAYMENTS_ENABLED = true`. Кнопка «Оплатить онлайн» появится в оформлении автоматически.
+
+---
+
+## 🗂 Структура
+
+```
+app/               маршруты (главная, /catalog, /collections, /product, /cart), SEO (sitemap, robots, иконки)
+components/
+  layout/          Header, Footer, меню, переключатели, drawer корзины
+  home/            секции главной (Hero, Featured, Collections, WhyUs, ...)
+  product/         карточка, каталог, страница товара
+  collections/     карточка/детали коллекции
+  cart/            drawer, строка, страница оформления
+  ui/              логотип, иконки, кнопки, reveal-анимации
+lib/               данные (products/collections), config, i18n, cart, whatsapp, payment
+public/products/   изображения товаров
+```
+
+Фирменные цвета и типографика — в [`app/globals.css`](app/globals.css) (`@theme`).
+
+---
+
+Made for DELISHAS · Premium Desserts
+# delishas
